@@ -11,7 +11,7 @@ topic_arn=$(aws sns list-topics | grep arn | cut -d':' -f2,3,4,5,6,7 | sed 's/"/
 
 
 #Create Email Subscription
-# Ask the user for his Topic name
+# Ask the user for his Mail
 echo What is your subscribe Email?
 read varmail
 aws sns subscribe --topic-arn $topic_arn --protocol email --notification-endpoint $varmail
