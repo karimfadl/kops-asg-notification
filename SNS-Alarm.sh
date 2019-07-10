@@ -16,16 +16,18 @@ echo What is your subscribe Email?
 read varmail
 aws sns subscribe --topic-arn $topic_arn --protocol email --notification-endpoint $varmail
 
-#Integrate ASG With SNS Topic
+#Create Alarm For ASG Group Desired Capacity
 while true
 do
- read -r -p "Are You Need To Integrate SNS Topic With ASG? [Y/n] " input
+ read -r -p "Are You Need To Create Alarm with SNS Action For ASG? [Y/n] " input
 
  case $input in
      [yY][eE][sS]|[yY])
 echo What is your Autoscaling Group Name?
 read var_asg
-aws autoscaling put-notification-configuration --auto-scaling-group-name $var_asg --topic-arn $topic_arn --notification-type autoscaling:EC2_INSTANCE_LAUNCH autoscaling:EC2_INSTANCE_LAUNCH_ERROR autoscaling:EC2_INSTANCE_TERMINATE autoscaling:EC2_INSTANCE_TERMINATE_ERROR autoscaling:TEST_NOTIFICATION
+echo What is Group Desired Capacity Threshold of ASG instances?
+read var_threshold
+aws cloudwatch put-metric-alarm --alarm-name $var_asg-Alarm --alarm-description "Check Kops ASG Group Desired Capacity" --metric-name GroupDesiredCapacity  --namespace AWS/AutoScaling --statistic Average --period 300 --threshold $var_threshold --comparison-operator LessThanThreshold --dimensions  Name=AutoScalingGroupName,Value=$var_asg --evaluation-periods 1 --alarm-actions $topic_arn
  ;;
      [nN][oO]|[nN])
  echo "Script Finished Check AWS Console"
