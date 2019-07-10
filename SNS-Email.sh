@@ -7,7 +7,7 @@ read vartopic
 
 #Create Topic
 aws sns create-topic --name $vartopic
-topic_arn=$(aws sns list-topics | grep arn | cut -d':' -f2,3,4,5,6,7 | sed 's/"//g')
+topic_arn=$(aws sns list-topics | grep $vartopic | cut -d':' -f2,3,4,5,6,7 | sed 's/"//g')
 
 
 #Create Email Subscription
